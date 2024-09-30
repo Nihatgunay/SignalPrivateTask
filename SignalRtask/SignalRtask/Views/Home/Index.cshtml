@@ -1,0 +1,30 @@
+﻿
+<input placeholder="username" id="username" />
+<input placeholder="message" id="message" />
+<button id="sendbtn">send</button>
+
+<ul id="usermessages"> 
+
+</ul>
+
+<script>
+    let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7104/chathub").build();
+    connection.start();
+
+    let username = document.getElementById("username");
+    let message = document.getElementById("message");
+    let usermessages = document.getElementById("usermessages");
+    let btn = document.getElementById("sendbtn");
+
+    btn.addEventListener("click", function(){
+        connection.invoke("SendMessageAsync", username.value, message.value)
+    })
+    connection.on("ReceiveMessage", (username, message) => {
+        let li = document.createElement("li");
+
+        li.innerText = `${username} - ${message}`
+
+        usermessages.append(li);
+    })
+
+</script>
