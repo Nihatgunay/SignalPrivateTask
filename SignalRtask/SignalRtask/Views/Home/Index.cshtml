@@ -7,6 +7,8 @@
 
 </ul>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.11/signalr.min.js"></script>
+
 <script>
     let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7104/chathub").build();
     connection.start();

@@ -8,5 +8,6 @@ namespace SignalRtask.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", username, message);
         }
-    }
+
+	}
 }

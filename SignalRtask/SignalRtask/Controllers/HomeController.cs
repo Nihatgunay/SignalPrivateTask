@@ -18,7 +18,12 @@ namespace SignalRtask.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+		//public IActionResult PrivateMessage()
+		//{
+		//	return View();
+		//}
+
+		public IActionResult Privacy()
         {
             return View();
         }

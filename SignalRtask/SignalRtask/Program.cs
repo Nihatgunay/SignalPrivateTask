@@ -1,5 +1,8 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SignalRtask.DAL;
 using SignalRtask.Hubs;
 using SignalRtask.Models;
@@ -45,7 +48,26 @@ namespace SignalRtask
                 });
             });
 
-            var app = builder.Build();
+			builder.Services.AddAuthentication(opt =>
+			{
+				opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+				opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+			}).AddJwtBearer(op =>
+			{
+				op.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+				{
+					ValidateIssuer = true,
+					ValidateAudience = true,
+					ValidIssuer = builder.Configuration.GetSection("JWT:audience").Value,
+					ValidAudience = builder.Configuration.GetSection("JWT:issuer").Value,
+					ValidateLifetime = true,
+					ClockSkew = TimeSpan.Zero,
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:secretKey").Value))
+				};
+			});
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -59,7 +81,7 @@ namespace SignalRtask
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseCors();
